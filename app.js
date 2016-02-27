@@ -2,6 +2,12 @@ var express = require('express');
 var logger = require('morgan');
 var path = require('path');
 var routes = require('./routes/index');
+var apiRoutes = require('./routes/api');
+var mongoose = require('mongoose');
+
+var config = require('./config');
+
+mongoose.connect(config.dbUrl);
 
 var app = express();
 
@@ -9,6 +15,7 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/api', apiRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -17,7 +24,6 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-console.log("madafakin darra");
 // development error handler
 // will print stacktrace
 /*if (app.get('env') === 'development') {
