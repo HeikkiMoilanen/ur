@@ -8,7 +8,7 @@ var router = express.Router();
 
 router.post('/', function(req, res, next) {
   if(!req.headers.longurl) {
-    res.json({success: 0, message: "no url specified"});
+    res.status(400).json({message: "no url specified"});
     return;
   }
 
@@ -18,11 +18,13 @@ router.post('/', function(req, res, next) {
   var newURL = new urlModel({ _id: shortURL, longUrl: req.headers.longurl });
   newURL.save(function (err, result) {
     if (err) {
-      var message = customURL ? "url already taken" : "something went wrong - please try again";
-      res.json({success: 0, message: message});
+      if(customURL)
+        res.status(400).json({message: "url already taken"});
+      else
+        res.status(500).json({message: "something went wrong - please try again"});
       return;
     }
-    res.json({success: 1, url: shortURL});
+    res.status(201).json({url: shortURL});
   });
 });
 
