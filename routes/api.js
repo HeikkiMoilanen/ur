@@ -3,11 +3,12 @@ var mongoose = require('mongoose');
 var shortid = require('shortid');
 
 var urlModel = require("../backend/models/urls");
+var toURL = require("../utils").toURL;
 
 var router = express.Router();
 
 router.post('/', function(req, res, next) {
-  if(!req.headers.longurl) {
+  if(!req.headers.longurl || typeof req.headers.longurl != "string" || req.headers.longurl.length === 0) {
     res.status(400).json({message: "no url specified"});
     return;
   }
@@ -15,16 +16,21 @@ router.post('/', function(req, res, next) {
   var customURL = "shorturl" in req.headers;
   var shortURL = customURL ? req.headers.shorturl : shortid.generate();
 
-  var newURL = new urlModel({ _id: shortURL, longUrl: req.headers.longurl });
+  var newURL = new urlModel({ _id: shortURL, longUrl: toURL(req.headers.longurl) });
   newURL.save(function (err, result) {
     if (err) {
-      if(customURL)
+
+      if (customURL) {
         res.status(400).json({message: "url already taken"});
-      else
-        res.status(500).json({message: "something went wrong - please try again"});
-      return;
+      } else {
+        var message = err.message || "something went wrong - please try again";
+        res.status(err.status || 500);
+        res.json({message: message});
+      }
+
+    } else {
+      res.status(201).json({url: shortURL});
     }
-    res.status(201).json({url: shortURL});
   });
 });
 

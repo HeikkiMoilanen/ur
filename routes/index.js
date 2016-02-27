@@ -12,13 +12,11 @@ router.get('/:shortURL', function(req, res, next) {
 	urlModel.find({_id: req.params.shortURL}, function(err, results){
 		if(err) {
 			// do something here
-			return;
-		}
-		if(results.length === 0){
+		} else if (results.length === 0) {
 			// 404
-			return;
+		} else {
+			res.redirect(results[0].longUrl);
 		}
-		res.redirect(results[0].longUrl);
 	});
 });
 
