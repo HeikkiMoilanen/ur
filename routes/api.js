@@ -1,19 +1,30 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var shortid = require('shortid');
 
 var urlModel = require("../backend/models/urls");
-var makeid = require("../backend/utils").makeid;
 
 var router = express.Router();
 
 router.post('/', function(req, res, next) {
-  var fluffy = new urlModel({ _id: makeid(), longUrl: 'foo' });
-  fluffy.save(function (err, fluffy) {
+  if(!req.headers.longurl) {
+    res.status(400).json({message: "no url specified"});
+    return;
+  }
+
+  var customURL = "shorturl" in req.headers;
+  var shortURL = customURL ? req.headers.shorturl : shortid.generate();
+
+  var newURL = new urlModel({ _id: shortURL, longUrl: req.headers.longurl });
+  newURL.save(function (err, result) {
     if (err) {
-      res.json({message: "fail"})
-      return console.error(err);
+      if(customURL)
+        res.status(400).json({message: "url already taken"});
+      else
+        res.status(500).json({message: "something went wrong - please try again"});
+      return;
     }
-    res.json({message: "jee"})
+    res.status(201).json({url: shortURL});
   });
 });
 
