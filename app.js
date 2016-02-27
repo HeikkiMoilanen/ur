@@ -1,8 +1,8 @@
 var express = require('express');
 var logger = require('morgan');
 var path = require('path');
-var routes = require('./routes/index');
-var apiRoutes = require('./routes/api');
+var routes = require('./backend/routes/index');
+var apiRoutes = require('./backend/routes/api');
 var mongoose = require('mongoose');
 
 var config = require('./config');
