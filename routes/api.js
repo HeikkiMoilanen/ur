@@ -17,4 +17,16 @@ router.post('/', function(req, res, next) {
   });
 });
 
+router.get('/:shortUrl', function (req, res, next) {
+	var shortUrl = req.params.shortUrl
+
+	urlModel.find({'_id': shortUrl}, function(err, data) {
+		if(err || data.length == 0 || !data[0].longUrl) {
+			res.status(404).send('not found');
+		} else {
+			res.json({message: data[0].longUrl})
+		}
+	});
+});
+
 module.exports = router;
