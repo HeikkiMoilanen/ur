@@ -2,7 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var shortid = require('shortid');
 
-var urlModel = require("../backend/models/urls");
+var urlModel = require("../models/urls");
 var toURL = require("../utils").toURL;
 
 var router = express.Router();

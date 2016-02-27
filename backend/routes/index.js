@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-var urlModel = require("../backend/models/urls");
+var urlModel = require("../models/urls");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	res.sendFile(path.resolve(__dirname + '/../frontend/index.html'));
+	res.sendFile(path.resolve(__dirname + '/../../frontend/index.html'));
 });
 
 router.get('/:shortURL', function(req, res, next) {
